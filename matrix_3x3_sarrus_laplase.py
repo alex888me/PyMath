@@ -41,21 +41,23 @@ def determinant_laplace(matrix):
     det = a * (e * i - f * h) - b * (d * i - f * g) + c * (d * h - e * g)
     return det
 
-matrix_src = [[1, -3, 1, -2],
-             [-2, 7, -6, 13],
-             [2, -9, 3, -9]]
+def chio_determinant(matrix):
+    if len(matrix) == 1:
+        return matrix[0][0]
 
-# matrix_src = [[2, -3, 3, 17],
-#              [1, 1, 1, 2],
-#              [3, -1, -1, 2]]
+    if len(matrix) == 2:
+        return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]
 
-# matrix_src = [[2, 3, 1, 8],
-#              [1, 4, 2, 6],
-#              [3, 2, 4, 7]]
+    def get_cofactor(matrix, row, col):
+        submatrix = [row[:col] + row[col + 1:] for row in (matrix[:row] + matrix[row + 1:])]
+        return chio_determinant(submatrix)
 
-# matrix_src = [[2, 1, -1, 2],
-#              [1, -1, 1, 1],
-#              [3, -2, 1, 3]]
+    return sum((-1) ** col * matrix[0][col] * get_cofactor(matrix, 0, col) for col in range(len(matrix)))
+
+
+matrix_src = [[3, -1, 1, 2],
+             [2, 4, -1, 1],
+             [1, 1, 1, 3]]
 
 matrix_for_x_wyl = crop_matrix(matrix_src, 0)
 print(f"Matrix x: {matrix_for_x_wyl}")
@@ -76,10 +78,18 @@ determinant_laplace_x = determinant_laplace(matrix_for_x_wyl)
 determinant_laplace_y = determinant_laplace(matrix_for_y_wyl)
 determinant_laplace_z = determinant_laplace(matrix_for_z_wyl)
 
-print(f"wyznacznik w = {wyznacznik_w}; determinant laplace w = {determinant_laplace_w}")
-print(f"wyznacznik x = {wyznacznik_x}; determinant laplace x = {determinant_laplace_x}")
-print(f"wyznacznik y = {wyznacznik_y}; determinant laplace y = {determinant_laplace_y}")
-print(f"wyznacznik z = {wyznacznik_z}; determinant laplace z = {determinant_laplace_z}")
+determinant_chio_w = chio_determinant(matrix_for_w_wyl)
+determinant_chio_x = chio_determinant(matrix_for_x_wyl)
+determinant_chio_y = chio_determinant(matrix_for_y_wyl)
+determinant_chio_z = chio_determinant(matrix_for_z_wyl)
+
+
+
+
+print(f"wyznacznik w = {wyznacznik_w}; determinant laplace w = {determinant_laplace_w}; determinant chio w = {determinant_chio_w}")
+print(f"wyznacznik x = {wyznacznik_x}; determinant laplace x = {determinant_laplace_x}; determinant chio x = {determinant_chio_x}")
+print(f"wyznacznik y = {wyznacznik_y}; determinant laplace y = {determinant_laplace_y}; determinant chio y = {determinant_chio_y}")
+print(f"wyznacznik z = {wyznacznik_z}; determinant laplace z = {determinant_laplace_z}; determinant chio z = {determinant_chio_z}")
 
 
 print(f"x = {wyznacznik_x}/{wyznacznik_w} = {wyznacznik_x/wyznacznik_w}")
